@@ -1,4 +1,3 @@
-import React from 'react'
 import ReactDOM from 'react-dom/client'
 import App from './App'
 import './index.css'
@@ -6,7 +5,7 @@ import { BrowserRouter } from 'react-router-dom'
 import { ToastContainer } from 'react-toastify'
 
 ReactDOM.createRoot(document.getElementById('root') as HTMLElement).render(
-  <React.StrictMode>
+  // <React.StrictMode>
     <BrowserRouter>
       <ToastContainer
                 position="top-center"
@@ -22,5 +21,5 @@ ReactDOM.createRoot(document.getElementById('root') as HTMLElement).render(
                 />
       <App />
     </BrowserRouter>
-  </React.StrictMode>,
+  // </React.StrictMode>,
 )

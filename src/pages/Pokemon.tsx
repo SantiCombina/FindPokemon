@@ -5,16 +5,27 @@ type Form = HTMLFormElement & {
   pokemon: HTMLInputElement;
 };
 
+interface Pokemon {
+  id: number;
+  name: string;
+  image: string;
+  gif: string;
+}
+
 export const Pokemon = () => {
-  const [pokemonList, setPokemonList] = useState({
-    id: 0,
-    name: "",
-    image: "",
-    gif: "",
-  });
+  const [lastPokemon, setLastPokemon] = useState<Pokemon | undefined>(
+    undefined
+  );
+  const [pokemonList, setPokemonList] = useState<Pokemon | undefined>(
+    undefined
+  );
   const [hasWon, setHasWon] = useState(false);
 
-  const pokemonData = (num: number) => {
+  const pokemonData = () => {
+    const min = 1;
+    const max = 151;
+    const num = Math.floor(Math.random() * (max - min + min) + min);
+
     fetch(`https://pokeapi.co/api/v2/pokemon/${num}/`)
       .then((res) => res.json())
       .then((data) =>
@@ -27,6 +38,7 @@ export const Pokemon = () => {
         })
       );
   };
+  console.log(pokemonList?.name);
 
   const handleSubmit = (event: React.FormEvent<Form>) => {
     event.preventDefault();
@@ -42,53 +54,86 @@ export const Pokemon = () => {
     }
   };
 
-  const randomPokemon = () => {
-    const min = 1;
-    const max = 151;
-    const num = Math.floor(Math.random() * (max - min + min) + min);
-    pokemonData(num);
-  };
-
   const playAgain = () => {
+    setLastPokemon(pokemonList);
     setHasWon(false);
-    randomPokemon();
+    pokemonData();
   };
 
   useEffect(() => {
-    randomPokemon();
+    pokemonData();
   }, []);
 
+  useEffect(() => {
+    setTimeout(() => {
+      setLastPokemon(undefined);
+    }, 1500);
+  }, [pokemonList]);
+
   return (
-    <div className="h-screen bg-hero-pattern bg-no-repeat bg-cover flex items-center justify-center bg-center p-3">
-      <div className="bg-black/80 rounded-xl min-h-[548px] max-w-2xl max-h-2xl w-full h-fit flex items-center justify-center flex-col p-5">
-        <img
-          className={`max-h-[350px] max-w-[350px] w-full h-full select-none pointer-events-none pixelated ${
-            hasWon ? "p-10" : "brightness-0 invert"
-          }`}
-          src={hasWon ? pokemonList.gif : pokemonList.image}
-          alt="pokemon"
-        />
-        {hasWon ? (
-          <button onClick={playAgain} className="nes-btn is-success" autoFocus>
-            Play again
-          </button>
-        ) : (
-          <form
-            onSubmit={handleSubmit}
-            className="w-fit flex flex-col justify-center"
-          >
-            <input
-              type="text"
-              id="name_field"
-              className="nes-input outline-none"
-              name="pokemon"
-              autoFocus
-              autoComplete="off"
+    <div
+      className="h-screen bg-hero-pattern bg-no-repeat bg-cover flex items-center justify-between flex-col bg-center p-3"
+      style={{ boxShadow: "inset 0 100vh 0 rgba(0, 0, 0, .1)" }}
+    >
+      <span />
+      <div className="bg-black/80 rounded-2xl min-h-[548px] max-w-2xl max-h-2xl w-full h-fit flex items-center justify-center flex-col p-5">
+        {!hasWon && !lastPokemon ? (
+          <>
+            <img
+              className={`max-h-[350px] max-w-[350px] w-full h-full select-none pointer-events-none pixelated ${
+                !hasWon && !lastPokemon ? "brightness-0 invert" : "p-10"
+              }`}
+              src={
+                lastPokemon
+                  ? lastPokemon.gif
+                  : !hasWon
+                  ? pokemonList?.image
+                  : pokemonList?.gif
+              }
+              alt="pokemon"
             />
-            <button className="nes-btn">Submit</button>
-          </form>
+            <form onSubmit={handleSubmit} className="flex flex-col">
+              <input
+                type="text"
+                id="name_field"
+                className="nes-input outline-none"
+                name="pokemon"
+                autoFocus
+                autoComplete="off"
+              />
+              <button className="nes-btn">Submit</button>
+            </form>
+          </>
+        ) : (
+          <>
+            <img
+              className={`max-h-[350px] max-w-[350px] w-full h-full select-none pointer-events-none pixelated ${
+                !hasWon && !lastPokemon ? "brightness-0 invert" : "p-10"
+              }`}
+              src={
+                lastPokemon
+                  ? lastPokemon.gif
+                  : !hasWon
+                  ? pokemonList?.image
+                  : pokemonList?.gif
+              }
+              alt="pokemon"
+            />
+            {hasWon && (
+              <button
+                onClick={playAgain}
+                className="nes-btn is-success px-8"
+                autoFocus
+              >
+                Play again
+              </button>
+            )}
+          </>
         )}
       </div>
+      <footer className="text-lime-400 flex w-full justify-center text-sm font-light -mb-1 font-sans">
+        Developed by Santiago Combina
+      </footer>
     </div>
   );
 };
