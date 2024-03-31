@@ -70,23 +70,28 @@ export const Pokemon = () => {
 
   useEffect(() => {
     if (lastPokemon) {
-      setLastPokemon(undefined);
-      const img = document.getElementById("poketest");
-      if (img) {
-        img.style.visibility = "visible";
-      }
+      setTimeout(() => {
+        setLastPokemon(undefined);
+        const img = document.getElementById("poketest");
+        if (img) {
+          img.style.visibility = "visible";
+        }
+      }, 1000);
     }
   }, [pokemonList]);
 
   return (
-    <div className="h-screen bg-hero-pattern bg-no-repeat bg-cover flex items-center justify-between flex-col bg-center p-3">
+    <div
+      className="h-screen bg-hero-pattern bg-no-repeat bg-cover flex items-center justify-between flex-col bg-center p-3"
+      style={{ boxShadow: "inset 0 100vh 0 rgba(0, 0, 0, .1)" }}
+    >
       <span />
-      <div className="bg-black/80 rounded-xl min-h-[548px] max-w-2xl max-h-2xl w-full h-fit flex items-center justify-center flex-col p-5">
+      <div className="bg-black/80 rounded-2xl min-h-[548px] max-w-2xl max-h-2xl w-full h-fit flex items-center justify-center flex-col p-5">
         {lastPokemon ? (
           <>
             <img
-              className={`max-h-[350px] max-w-[350px] w-full h-full p-10`}
-              src={lastPokemon ? lastPokemon.gif : pokemonList?.gif}
+              className={`max-h-[350px] max-w-[350px] w-full h-full select-none pointer-events-none pixelated`}
+              src={lastPokemon.gif}
               alt="pokemon"
             />
             {hasWon && (
@@ -125,7 +130,7 @@ export const Pokemon = () => {
           </>
         )}
       </div>
-      <footer className="text-green-900 flex w-full justify-center text-xs">
+      <footer className="text-lime-400 flex w-full justify-center text-sm font-light -mb-1 font-sans">
         Developed by Santiago Combina
       </footer>
     </div>
