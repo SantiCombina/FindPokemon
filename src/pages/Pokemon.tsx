@@ -48,6 +48,7 @@ export const Pokemon = () => {
     if (pokemon?.value?.toLowerCase() === pokemonList?.name?.toLowerCase()) {
       setHasWon(true);
       toast.success("You won!");
+      setLastPokemon(pokemonList);
     } else {
       toast.error("Wrong answer!");
       pokemon.value = "";
@@ -55,8 +56,11 @@ export const Pokemon = () => {
   };
 
   const playAgain = () => {
-    setLastPokemon(pokemonList);
     setHasWon(false);
+    const img = document.getElementById("poketest");
+    if (img) {
+      img.style.visibility = "hidden";
+    }
     pokemonData();
   };
 
@@ -65,38 +69,53 @@ export const Pokemon = () => {
   }, []);
 
   useEffect(() => {
-    setTimeout(() => {
+    if (lastPokemon) {
       setLastPokemon(undefined);
-    }, 1500);
+      const img = document.getElementById("poketest");
+      if (img) {
+        img.style.visibility = "visible";
+      }
+    }
   }, [pokemonList]);
 
   return (
-    <div
-      className="h-screen bg-hero-pattern bg-no-repeat bg-cover flex items-center justify-between flex-col bg-center p-3"
-      style={{ boxShadow: "inset 0 100vh 0 rgba(0, 0, 0, .1)" }}
-    >
+    <div className="h-screen bg-hero-pattern bg-no-repeat bg-cover flex items-center justify-between flex-col bg-center p-3">
       <span />
-      <div className="bg-black/80 rounded-2xl min-h-[548px] max-w-2xl max-h-2xl w-full h-fit flex items-center justify-center flex-col p-5">
-        {!hasWon && !lastPokemon ? (
+      <div className="bg-black/80 rounded-xl min-h-[548px] max-w-2xl max-h-2xl w-full h-fit flex items-center justify-center flex-col p-5">
+        {lastPokemon ? (
           <>
             <img
-              className={`max-h-[350px] max-w-[350px] w-full h-full select-none pointer-events-none pixelated ${
-                !hasWon && !lastPokemon ? "brightness-0 invert" : "p-10"
-              }`}
-              src={
-                lastPokemon
-                  ? lastPokemon.gif
-                  : !hasWon
-                  ? pokemonList?.image
-                  : pokemonList?.gif
-              }
+              className={`max-h-[350px] max-w-[350px] w-full h-full p-10`}
+              src={lastPokemon ? lastPokemon.gif : pokemonList?.gif}
               alt="pokemon"
             />
-            <form onSubmit={handleSubmit} className="flex flex-col">
+            {hasWon && (
+              <button
+                onClick={playAgain}
+                className="nes-btn is-success"
+                autoFocus
+              >
+                Play again
+              </button>
+            )}
+          </>
+        ) : (
+          <>
+            <img
+              className={`max-h-[350px] max-w-[350px] w-full h-full select-none animation-pulse pointer-events-none pixelated from:opacity-0 to:opacity-1 from:scale-0 to:scale-100 duration-100 transition-all brightness-0 invert`}
+              src={pokemonList?.image}
+              alt="pokemon"
+              id="poketest"
+              style={{ visibility: "visible" }}
+            />
+            <form
+              onSubmit={handleSubmit}
+              className="w-ful flex flex-col items-center justify-center"
+            >
               <input
                 type="text"
                 id="name_field"
-                className="nes-input outline-none"
+                className="nes-input w-full outline-none"
                 name="pokemon"
                 autoFocus
                 autoComplete="off"
@@ -104,34 +123,9 @@ export const Pokemon = () => {
               <button className="nes-btn">Submit</button>
             </form>
           </>
-        ) : (
-          <>
-            <img
-              className={`max-h-[350px] max-w-[350px] w-full h-full select-none pointer-events-none pixelated ${
-                !hasWon && !lastPokemon ? "brightness-0 invert" : "p-10"
-              }`}
-              src={
-                lastPokemon
-                  ? lastPokemon.gif
-                  : !hasWon
-                  ? pokemonList?.image
-                  : pokemonList?.gif
-              }
-              alt="pokemon"
-            />
-            {hasWon && (
-              <button
-                onClick={playAgain}
-                className="nes-btn is-success px-8"
-                autoFocus
-              >
-                Play again
-              </button>
-            )}
-          </>
         )}
       </div>
-      <footer className="text-lime-400 flex w-full justify-center text-sm font-light -mb-1 font-sans">
+      <footer className="text-green-900 flex w-full justify-center text-xs">
         Developed by Santiago Combina
       </footer>
     </div>
