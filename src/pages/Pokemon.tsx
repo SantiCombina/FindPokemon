@@ -115,7 +115,7 @@ export const Pokemon = () => {
           </>
         )}
       </div>
-      <footer className="text-lime-400 flex w-full justify-center text-sm font-light -mb-1 font-sans">
+      <footer className="text-lime-600 flex w-full justify-center text-sm font-light -mb-1 font-sans">
         Developed by Santiago Combina
       </footer>
     </div>
