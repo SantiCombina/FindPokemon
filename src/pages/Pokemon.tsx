@@ -37,6 +37,9 @@ export const Pokemon = () => {
             .front_default,
         })
       );
+    setTimeout(() => {
+      setLastPokemon(undefined);
+    }, 700);
   };
   console.log(pokemonList?.name);
 
@@ -57,10 +60,6 @@ export const Pokemon = () => {
 
   const playAgain = () => {
     setHasWon(false);
-    const img = document.getElementById("poketest");
-    if (img) {
-      img.style.visibility = "hidden";
-    }
     pokemonData();
   };
 
@@ -68,51 +67,37 @@ export const Pokemon = () => {
     pokemonData();
   }, []);
 
-  useEffect(() => {
-    if (lastPokemon) {
-      setTimeout(() => {
-        setLastPokemon(undefined);
-        const img = document.getElementById("poketest");
-        if (img) {
-          img.style.visibility = "visible";
-        }
-      }, 1000);
-    }
-  }, [pokemonList]);
-
   return (
     <div
       className="h-screen bg-hero-pattern bg-no-repeat bg-cover flex items-center justify-between flex-col bg-center p-3"
       style={{ boxShadow: "inset 0 100vh 0 rgba(0, 0, 0, .1)" }}
     >
       <span />
-      <div className="bg-black/80 rounded-2xl min-h-[548px] max-w-2xl max-h-2xl w-full h-fit flex items-center justify-center flex-col p-5">
-        {lastPokemon ? (
-          <>
-            <img
-              className={`max-h-[350px] max-w-[350px] w-full h-full select-none pointer-events-none pixelated`}
-              src={lastPokemon.gif}
-              alt="pokemon"
-            />
-            {hasWon && (
-              <button
-                onClick={playAgain}
-                className="nes-btn is-success"
-                autoFocus
-              >
-                Play again
-              </button>
-            )}
-          </>
+      <div className="bg-black/80 rounded-xl min-h-[548px] max-w-2xl max-h-2xl w-full h-fit flex items-center justify-center flex-col p-5">
+        <div className="relative flex justify-center items-center max-h-[350px] max-w-[350px] w-full h-full">
+          <img
+            className={`w-full h-full p-10 absolute ${
+              lastPokemon ? "opacity-1 scale-75" : "opacity-0 scale-0"
+            } transition-all`}
+            src={lastPokemon ? lastPokemon.gif : pokemonList?.gif}
+            alt="pokemon"
+          />
+          <img
+            className={`${
+              lastPokemon ? "opacity-0" : "opacity-1"
+            } absolute w-full h-full select-none pointer-events-none pixelated brightness-0 invert`}
+            src={pokemonList?.image}
+            alt="pokemon"
+            id="poketest"
+            style={{ visibility: "visible" }}
+          />
+        </div>
+        {hasWon || lastPokemon  ? (
+          <button onClick={playAgain} className="nes-btn is-success" autoFocus>
+            Play again
+          </button>
         ) : (
           <>
-            <img
-              className={`max-h-[350px] max-w-[350px] w-full h-full select-none animation-pulse pointer-events-none pixelated from:opacity-0 to:opacity-1 from:scale-0 to:scale-100 duration-100 transition-all brightness-0 invert`}
-              src={pokemonList?.image}
-              alt="pokemon"
-              id="poketest"
-              style={{ visibility: "visible" }}
-            />
             <form
               onSubmit={handleSubmit}
               className="w-ful flex flex-col items-center justify-center"
